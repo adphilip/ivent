@@ -1,0 +1,163 @@
+<!--
+@license
+Copyright (c) 2015 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../bower_components/paper-styles/typography.html">
+<dom-module id="add-event">
+  <template>
+    <style include="shared-styles">
+      :host {
+        display: block;
+      }
+  
+    paper-button[disabled], paper-icon-button[disabled] {
+      pointer-events: none;
+    }
+    
+    </style>
+  <google-maps-api id="maps" libraries="places" on-api-load="on_api_load"></google-maps-api>
+  <div class="layout vertical main">
+
+    <form is="iron-form" id="eventsForm">
+
+      <paper-card heading="Hosting An Event Is Fast And Easy!">
+        <paper-input name="eventname" id="eventname" label="Name of the event" autofocus required auto-validate error-message="Enter Event Title"></paper-input>
+        <paper-input name="event_type" id="event_type" is="iron-input" list="dlist" label="Type of the event e.g Birthday Party" required auto-validate error-message="What is this event type?"></paper-input>
+        <datalist id="dlist">
+            <option>Birthday Party</option>
+            <option>Conference Talk</option>
+            <option>Wedding</option>
+            <option>Debate</option>
+        </datalist>
+        <paper-input name="eventhost" id="eventhost" label="Event host e.g name or organization" required auto-validate error-message="Enter event host"></paper-input>
+        <paper-input name="eventstart" id="eventstart" label="Start Date" type="datetime-local" required auto-validate error-message="When is this event?"></paper-input>
+        <paper-input name="eventend" id="eventend" label="End Date" type="datetime-local" required auto-validate error-message="When does it end?"></paper-input>
+        <paper-input name="eventguest" id="eventguest" label="Guest List seperated by commas" required auto-validate error-message="Who is the special guest of honor?"></paper-input>
+        <paper-input name="eventlocal" id="eventlocal" id="eventlocal" autocomplete="on" label="Event Location" value="{{value}}" required auto-validate error-message="Place of event"></paper-input>
+        <paper-textarea name="eventdescription" id="eventdescription" label="Event Description" required auto-validate error-message="More about this event"></paper-textarea>
+        <div id="estatus"></div>
+        <div class="margin30"></div>
+      <paper-button toggles raised class="submit custom green"  onclick="_eventSubmit(event)" disabled id="eventsSubmit">
+      <paper-spinner id="spinnerevent" hidden></paper-spinner>Event</paper-button>
+       </paper-card>
+    </form>
+  </div>
+  </template>
+
+  <script>
+    (function() {
+      'use strict';
+
+      Polymer({
+        is: 'add-event',
+
+      properties: {
+      value: {
+        type: String,
+        notify: true
+      },
+      options: {
+        type: Object,
+        value: function () { return {}; }
+      },
+      place: {
+        type: Object,
+        value: function () { return {}; },
+        notify: true
+      }
+    },
+     ready: function () {
+        var eventsForm = this.$.eventsForm;
+        var estatus = this.$.estatus;
+        eventsForm.addEventListener('mouseout', function(event) {
+          eventsSubmit.disabled = !eventsForm.validate();
+        });
+        },
+    on_api_load: function () {
+      this.autocomplete = new google.maps.places.Autocomplete(this.$.eventlocal, this.options);
+      google.maps.event.addListener(this.autocomplete, 'place_changed', this.on_change_place.bind(this));
+    },
+    on_change_place: function () {
+      this.place = this.autocomplete.getPlace();
+      if (!this.place.address_components) {
+        return;
+      }
+      this.value = this.place.formatted_address;
+    }
+      });
+    })();
+    function _eventSubmit(event) {
+    event.preventDefault();
+    spinnerevent.active = true;
+    spinnerevent.hidden = false;
+    eventsSubmit.disabled = true;
+    var eName = document.querySelector('#eventname');
+    var eDesc = document.querySelector('#eventdescription');
+    var eStart = document.querySelector('#eventstart');
+    var eEnd = document.querySelector('#eventend');
+    var eHost = document.querySelector('#eventhost');
+    var eLocal = document.querySelector('#eventlocal');
+    var eGuest = document.querySelector('#eventguest');
+    var eType = document.querySelector('#event_type');
+    var eName = eName.value;
+    var eDesc = eDesc.value;
+    var eStart = eStart.value;
+    var eEnd = eEnd.value;
+    var eHost = eHost.value;
+    var eLocal = eLocal.value;
+    var eGuest = eGuest.value;
+    var eType = eType.value;
+    function randomString(len, charSet) {
+            charSet = charSet || 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+            var randomString = '';
+            for (var i = 0; i < len; i++) {
+              var randomPoz = Math.floor(Math.random() * charSet.length);
+              randomString += charSet.substring(randomPoz,randomPoz+1);
+            }
+            return randomString;
+        }
+      var randomValue = randomString(5);
+      var newString = eName.replace(/[^A-Z0-9]+/ig, "_");
+      var eventChild = newString + randomValue;
+      var ref = new Firebase("https://boiling-torch-4136.firebaseio.com");
+        var authData = ref.getAuth();
+        if (authData) {
+        var userid = authData.uid;
+        new Firebase('https://boiling-torch-4136.firebaseio.com/users/'+userid+'').once('value', function(snap) {
+        var fname = snap.val().full_name;
+      var fireBaseRefInfo = new Firebase("https://boiling-torch-4136.firebaseio.com/events");
+        fireBaseRefInfo.child(eventChild).set({
+              eventname: eName,
+              eventhost: eHost,
+              event_type: eType,
+              eventstart: eStart,
+              eventend: eEnd,
+              eventlocal: eLocal,
+              eventguest: eGuest,
+              eventdescription: eDesc,
+              eventposter: fname
+            }, function(error) {
+            if (error) {
+              //alert("Data could not be saved." + error);
+              estatus.innerHTML ='<div class="error">Data could not be saved '+error+'</div>';
+            } else {
+              window.scrollTo(0,0);
+              eventsForm.innerHTML = '<div class="success">Event created successfully. Go to <a href="/">Homepage</a> to view your event!</div>';
+              app.$.toast.text = 'Event Created Successfully!';
+              app.$.toast.show();
+              window.location = "/";
+      }
+    });
+         });
+       }
+    }
+ 
+  </script>
+</dom-module>

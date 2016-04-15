@@ -27,7 +27,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       next();
     }
 
-    function closeDrawer(ctx, next) {
+   function closeDrawer(ctx, next) {
       app.closeDrawer();
       next();
     }
@@ -36,8 +36,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       document.querySelector('section[data-route="' + selected + '"] .page-title').focus();
     }
 
-    // Routes
-    page('*', scrollToTop, closeDrawer, function(ctx, next) {
+    // Routes closeDrawer,
+    page('*', scrollToTop, function(ctx, next) {
       next();
     });
 
@@ -53,13 +53,14 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
     page('/users', function() {
       app.route = 'users';
-      setFocus(app.route);
+      //setFocus(app.route);
     });
 
     page('/users/:name', function(data) {
       app.route = 'user-info';
+      //app.route = '/users/:name';
       app.params = data.params;
-      setFocus(app.route);
+      //setFocus(app.route);
     });
 
     page('/contact', function() {
@@ -67,6 +68,59 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       setFocus(app.route);
     });
 
+    page('/login', function() {
+
+      //setFocus(app.route);
+      var ref = new Firebase("https://boiling-torch-4136.firebaseio.com");
+        var authData = ref.getAuth();
+        if (authData) {
+            console.log("Authenticated user with uid:", authData.uid);
+        page.redirect(app.baseUrl);
+        app.$.toast.text = 'Redirecting to homepage. You are logged in!';
+        app.$.toast.show();
+        } else {
+          app.route = 'login';
+        }
+        
+    });
+    page('/logout', function() {
+      var ref = new Firebase("https://boiling-torch-4136.firebaseio.com");
+      ref.unauth();
+      page.redirect(app.baseUrl);
+        app.$.toast.text = 'Redirecting.. You are log out!';
+        app.$.toast.show();
+        page.redirect(app.baseUrl);
+    });
+    page('/register', function() {
+      var ref = new Firebase("https://boiling-torch-4136.firebaseio.com");
+        var authData = ref.getAuth();
+        if (authData) {
+            console.log("Authenticated user with uid:", authData.uid);
+        page.redirect(app.baseUrl);
+        app.$.toast.text = 'Redirecting to homepage. You are logged in!';
+        app.$.toast.show();
+        }
+      app.route = 'register';
+      //setFocus(app.route);
+    });
+
+    page('/addevent', function() {
+      var ref = new Firebase("https://boiling-torch-4136.firebaseio.com");
+        var authData = ref.getAuth();
+       if (authData) {
+        app.route = 'addevent';
+        } else {  
+        app.$.toast.text = 'Redirecting to login. You need to log in to add event!';
+        app.$.toast.show();
+        app.route = 'login';
+        }
+    });
+
+    page('/event/:name', function(data) {
+      app.route = 'event-info';;
+      app.params = data.params;
+      //setFocus(app.route);
+    });
     // 404
     page('*', function() {
       app.$.toast.text = 'Can\'t find: ' + window.location.href  + '. Redirected you to Home Page';

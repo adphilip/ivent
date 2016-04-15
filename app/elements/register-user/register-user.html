@@ -1,0 +1,173 @@
+<!--
+@license
+Copyright (c) 2015 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../bower_components/paper-styles/typography.html">
+<title>Register An Account</title>
+<dom-module id="register-user">
+  <template>
+    <style include="shared-styles">
+      :host {
+        display: block;
+      }
+      #checkChar{
+        display:none;
+        font-size: 12px;
+        color: green;
+      }
+     .paper-icon-button-0  {
+        color: green;
+        line-height: 0;
+        padding:0;
+        height:16px;
+    }
+    </style>
+    
+  <div class="layout vertical main">
+    <form is="iron-form"  id="regForm">
+
+      <paper-card heading="Register An Acoount With Ivent">
+        <paper-input name="fullname" id="fullname" label="Full Name" autofocus auto-validate pattern="^[a-zA-Z\s]*$" error-message="Only letters accepted" required></paper-input>
+        <paper-input name="userEmail" id="userEmail" label="Email" auto-validate pattern="^\w+([-+.']\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*$" error-message="This Email is not right"  required ></paper-input>
+        <paper-input name="userpassword" id="userpassword" label="password" type="password" on-keyup="password" auto-validate error-message="Enter password" required></paper-input>
+         <div id="passStatus1"></div>
+        <div id="checkChar">
+        <div><paper-icon-button icon="check-circle"></paper-icon-button></span>At least one uppercase letter</div>
+        <div><paper-icon-button icon="check-circle"></paper-icon-button>At least one lowercase letter</div>
+        <div><paper-icon-button icon="check-circle"></paper-icon-button>One of these symbols: !, @, #, $, %, ^, &, *</div>
+        <div><paper-icon-button icon="check-circle"></paper-icon-button>At least one number</div>
+        <div><paper-icon-button icon="check-circle"></paper-icon-button>16-100 characters</div>
+      </div>
+       
+        <paper-input name="confirmPassword" id="confirmPassword" label="Confirm Password" on-keyup="password2" type="password" auto-validate  required error-message="Confirm password"></paper-input>
+        <div id="passStatus2"></div>
+        <gold-phone-input label="call this"></gold-phone-input>
+        <paper-input name="phonenumber" id="phonenumber" label="Phone Number" auto-validate pattern="\d*" error-message="Only numbers [1 ~ 9] are accepted" type="tel"></paper-input>
+     
+        <div id="regStatus"></div>
+        <div class="margin30"></div>
+      <paper-button toggles raised class="submit custom green" onclick="_regSubmit(event)" disabled id="regSubmit">
+    <paper-spinner id="spinnerreg" hidden></paper-spinner>Register now</paper-button>
+     </paper-card>
+
+      <h3> Have an account? <a href="{{baseUrl}}login">login now</a></h3>
+    </form>
+  </div>
+  </template>
+
+  <script>
+    (function() {
+      'use strict';
+
+      Polymer({
+        is: 'register-user',
+        properties: {
+
+  
+        },
+        password: function(event, detail, sender) { 
+          var userpassword1 = this.$.userpassword;
+          var userpassword2 = this.$.confirmPassword;
+          var passvalue = userpassword1.value;
+          var passvalue2 = userpassword2.value;
+          var passStatusOne = this.$.passStatus1;
+          var passStatusTwo = this.$.passStatus2;
+          var checkChar = this.$.checkChar;
+
+          checkChar.style.display = 'block';
+          userpassword1.addEventListener('mouseout', function(){
+            checkChar.style.display = 'none';
+          });
+
+         if(passvalue.length < 8 || passvalue.length > 100){
+            passStatusOne.innerHTML = '<span class="error-small">Password Length :: Password must be between 6 and 100 characters long!</span>';
+          } else if(!passvalue.match(/[\!\@\#\$\%\^\&\*]/g)){
+            passStatusOne.innerHTML = '<span class="error-small">Atleast one special character (!, @, #, $, %, ^, &, *)</span>';
+          } else if(!passvalue.match(/\d/g)){
+            passStatusOne.innerHTML = '<span class="error-small">Atleast one  number 1 ~ 9</span>';
+          } else if(!passvalue.match(/[a-z]/g)){
+            passStatusOne.innerHTML = '<span class="error-small">Atleast one lowercase letter</span>';
+          } else if(!passvalue.match(/[A-Z]/g)){
+            passStatusOne.innerHTML = '<span class="error-small">Atleast one uppercase letter</span>';
+          } else {
+            passStatusOne.innerHTML = '';
+            checkChar.style.display = 'none';
+          }
+        },
+        password2: function(event, detail, sender){
+          var userpassword1 = this.$.userpassword;
+          var userpassword2 = this.$.confirmPassword;
+          var passvalue = userpassword1.value;
+          var passvalue2 = userpassword2.value;
+          var passStatusOne = this.$.passStatus1;
+          var passStatusTwo = this.$.passStatus2;
+          if(passvalue !== passvalue2){
+            passStatusTwo.innerHTML = '<span class="error-small">Passwords Don\'t match</span>';
+          } else {
+            passStatusTwo.innerHTML = '';
+          }
+        },
+         ready: function () {
+        var regForm = this.$.regForm;
+        var regStatus = this.$.regStatus;
+        regForm.addEventListener('mouseout', function(event) {
+          regSubmit.disabled = !regForm.validate();
+        });
+
+        }
+      });
+    })();
+
+    function _regSubmit(event) {
+    event.preventDefault();
+    spinnerreg.active = true;
+    spinnerreg.hidden = false;
+    regSubmit.disabled = true;
+    var fname = document.querySelector('#fullname');
+    var useremail = document.querySelector('#userEmail');
+    var password = document.querySelector('#userpassword');
+    var phonenumber = document.querySelector('#phonenumber');
+    var fname = fname.value;
+    var useremail = useremail.value;
+    var password = password.value;
+    var phonenumber = phonenumber.value;
+    // Simulate a slow server response.
+    setTimeout(function() {
+      var fireBaseRef = new Firebase("https://boiling-torch-4136.firebaseio.com");
+       fireBaseRef.createUser({
+          email: useremail,
+          password: password
+        }, function(error, userData) {
+        if (error) {
+          regStatus.innerHTML = '<div class="error">'+error+'</div>'
+        } else {
+          var username = userData.uid;
+          var fireBaseRefInfo = new Firebase("https://boiling-torch-4136.firebaseio.com/users");
+           fireBaseRefInfo.child(username).set({
+              full_name: fname,
+              user_email: useremail,
+              phone_number: phonenumber
+            }, function(error) {
+            if (error) {
+              regStatus.innerHTML ='<div class="error">Data could not be saved: '+error+'</div>';
+            } else {
+              window.scrollTo(0,0);
+              regForm.innerHTML = '<div class="success">Account created successfully. <a href="login">Log in</a> to host an event!</div>';
+              app.$.toast.text = 'Account Created Successfully';
+              app.$.toast.show();
+            }
+          });
+        }
+      });
+      
+    }, 1000);
+  }
+  </script>
+</dom-module>

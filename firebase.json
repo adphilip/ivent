@@ -1,5 +1,5 @@
 {
-  "firebase": "polymer-starter-kit",
+  "firebase": "boiling-torch-4136",
   "public": "dist",
   "ignore": [
     "firebase.json",
@@ -9,5 +9,9 @@
   "rewrites": [ {
     "source": "**",
     "destination": "/index.html"
-  } ]
+  } ],
+   "rules": {
+        ".read": true,
+        ".write": true
+    }
 }

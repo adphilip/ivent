@@ -105,7 +105,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     min-height: 48px;
     padding: 0 16px;
   }
+  #mainToolbar{
 
+   transform: translate3d(0px, 0px, 0px);
+  }
   #mainToolbar.tall .app-name {
     font-size: 40px;
     font-weight: 300;
@@ -141,7 +144,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
   /* Height of the scroll area */
   .content {
-    height: 900px;
+    height: auto;
   }
 
   section[data-route="home"] paper-material {
@@ -199,7 +202,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     }
 
     iron-pages {
-      padding: 48px 62px;
+      /*padding: 48px 62px;*/
     }
 
     paper-material {
@@ -210,7 +213,45 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     }
 
   }
+paper-button.custom {
+    --paper-button-ink-color: var(--paper-red-500);
+    /* These could also be individually defined for each of the
+      specific css classes, but we'll just do it once as an example var(--paper-pink-a200) */
+    --paper-button-flat-keyboard-focus: {
+      background-color: var(--paper-red-500);
+      color: white !important;
+    };
+    --paper-button-raised-keyboard-focus: {
+      background-color: var(--paper-pink-a200) !important;
+      color: white !important;
+    };
+  }
+  paper-button.custom:hover {
+    background-color: var(--paper-red-500);
+  }
+  paper-button.pink {
+    color: var(--paper-pink-a200);
 
+  }
+  paper-button.indigo {
+    background-color: var(--paper-indigo-500);
+    color: white;
+    --paper-button-raised-keyboard-focus: {
+      background-color: var(--paper-pink-a200) !important;
+      color: white !important;
+    };
+  }
+  paper-button.green {
+    /*background-color: var(--paper-green-500);*/
+    background-color: #196A66;
+    color: white;
+  }
+  paper-button.green[active] {
+    background-color: var(--paper-red-500);
+  }
+  paper-button.disabled {
+    color: white;
+  }
   /* Material Design Adaptive Breakpoints */
   /*
     Below you'll find CSS media queries based on the breakpoint guidance
@@ -243,13 +284,38 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
   /* desktop-small-landscape */
   @media all and (min-width: 481px) and (max-width: 840px) and (orientation: landscape) { }
   /* desktop-small */
-  @media all and (min-width: 481px) and (max-width: 840px) and (max-aspect-ratio: 4/3) { }
+  @media all and (min-width: 481px) and (max-width: 840px) and (max-aspect-ratio: 4/3) {
+
+ }
   /* desktop-medium-landscape */
-  @media all and (min-width: 841px) and (max-width: 1280px) and (orientation: landscape) { }
+  @media all and (min-width: 841px) and (max-width: 1280px) and (orientation: landscape) {
+
+
+  }
   /* desktop-medium */
-  @media all and (min-width: 841px) and (max-width: 1280px) and (max-aspect-ratio: 4/3) { }
+  @media all and (min-width: 841px) and (max-width: 1280px) and (max-aspect-ratio: 4/3) {
+   
+    .event {
+       width: 48.3%;
+      float: left;
+      margin-right: 1%;
+    }
+   }
+   @media all and (min-width: 870px) and (max-width: 1280px) and (max-aspect-ratio: 4/3) {
+    .event {
+       width: 32.3%;
+      float: left;
+      margin-right: 1%;
+    }
+   }
   /* desktop-large */
-  @media all and (min-width: 1281px) and (max-width: 1600px) { }
+  @media all and (min-width: 1281px) and (max-width: 1600px) { 
+    .event {
+       width: 32.3%;
+      float: left;
+      margin-right: 1%;
+    }
+  }
   /* desktop-xlarge */
   @media all and (min-width: 1601px) and (max-width: 1920px) { }
 </style>
