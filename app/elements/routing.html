@@ -89,7 +89,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       page.redirect(app.baseUrl);
         app.$.toast.text = 'Redirecting.. You are log out!';
         app.$.toast.show();
-        page.redirect(app.baseUrl);
+        //page.redirect(app.baseUrl);
+        window.location = "/";
     });
     page('/register', function() {
       var ref = new Firebase("https://boiling-torch-4136.firebaseio.com");

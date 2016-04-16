@@ -28,7 +28,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     <form is="iron-form" id="eventsForm">
 
       <paper-card heading="Hosting An Event Is Fast And Easy!">
-        <paper-input name="eventname" id="eventname" label="Name of the event" autofocus required auto-validate error-message="Enter Event Title. Min Length 5" minlength="5"></paper-input>
+        <paper-input name="eventname" id="eventname" label="Name of the event"  required auto-validate error-message="Enter Event Title. Min Length 5" minlength="5" autofocus></paper-input>
         <paper-input name="event_type" id="event_type" is="iron-input" list="dlist" label="Type of the event e.g Birthday Party" required auto-validate error-message="What is this event type? Min Length 3" minlength="3"></paper-input>
         <datalist id="dlist">
             <option>Birthday Party</option>
@@ -36,18 +36,19 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             <option>Wedding</option>
             <option>Debate</option>
         </datalist>
-        <paper-input name="eventhost" id="eventhost" label="Event host e.g name or organization" minlength="5" required auto-validate error-message="Enter event host. Min Length 5"></paper-input>
+        <paper-input name="eventhost"  id="eventhost" label="Event host e.g name or organization" minlength="5" required auto-validate error-message="Enter event host. Min Length 5"></paper-input >
         <paper-input name="eventstart" id="eventstart" label="Start Date" type="datetime-local" required auto-validate error-message="When is this event?" value="" on-mouseout="datetimeCheck"></paper-input><div id="estartstatus"></div>
         <paper-input name="eventend" id="eventend" label="End Date" type="datetime-local" required auto-validate error-message="When does it end?" value="2020-04-16T8:45" on-mouseout="datetimeCheck2"></paper-input><div id="eendstatus"></div>
         <paper-input name="eventguest" id="eventguest" label="Guest List seperated by commas" required auto-validate error-message="Who is the special guest of honor? Min Length 5" minlength="5"></paper-input>
         <paper-input name="eventlocal" id="eventlocal" id="eventlocal" autocomplete label="Event Location" value="{{value}}" required auto-validate error-message="Place of event" minlength="3"></paper-input>
-        <paper-textarea name="eventdescription" id="eventdescription" label="Event Description (Optional)" auto-validate error-message="More about this event. Optional"></paper-textarea>
+        <paper-textarea name="eventdescription" id="eventdescription" label="Event Description (Optional)" auto-validate error-message="More about this event. Optional" value=""></paper-textarea>
         <div id="estatus"></div>
         <div class="margin30"></div>
       <paper-button toggles raised class="submit custom green"  onclick="_eventSubmit(event)" disabled id="eventsSubmit">
       <paper-spinner id="spinnerevent" hidden></paper-spinner>Event</paper-button>
        </paper-card>
     </form>
+
   </div>
   </template>
 
@@ -105,7 +106,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         var estartVal = eStart.value;
         eStart.setAttribute("value", datetime);
         eStart.setAttribute("min", datetime);
-        
         },
         datetimeCheck: function(event, detail, sender){
           var eStart = this.$.eventstart;
@@ -136,6 +136,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     on_api_load: function () {
       this.autocomplete = new google.maps.places.Autocomplete(this.$.eventlocal, this.options);
       google.maps.event.addListener(this.autocomplete, 'place_changed', this.on_change_place.bind(this));
+      
     },
     on_change_place: function () {
       this.place = this.autocomplete.getPlace();
@@ -153,23 +154,23 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     spinnerevent.hidden = false;
     var eventsSubmit = document.querySelector('#eventsSubmit');
     eventsSubmit.disabled = true;
-    var eName = document.querySelector('#eventname');
-    var eDesc = document.querySelector('#eventdescription');
-    var eStart = document.querySelector('#eventstart');
-    var eEnd = document.querySelector('#eventend');
-    var eHost = document.querySelector('#eventhost');
-    var eLocal = document.querySelector('#eventlocal');
-    var eGuest = document.querySelector('#eventguest');
-    var eType = document.querySelector('#event_type');
-    var eName = eName.value;
-    var eDesc = eDesc.value;
-    var eStart = eStart.value;
-    var eEnd = eEnd.value;
-    var eHost = eHost.value;
-    var eLocal = eLocal.value;
-    var eGuest = eGuest.value;
-    var eType = eType.value;
-    var thisdatetoday = document.querySelector('#eventstart').getAttribute("min");
+    var eName = document.querySelector('#eventname'),
+        eDesc = document.querySelector('#eventdescription'),
+        eStart = document.querySelector('#eventstart'),
+        eEnd = document.querySelector('#eventend'),
+        eHost = document.querySelector('#eventhost'),
+        eLocal = document.querySelector('#eventlocal'),
+        eGuest = document.querySelector('#eventguest'),
+        eType = document.querySelector('#event_type'),
+        eName = eName.value,
+        eDesc = eDesc.value,
+        eStart = eStart.value,
+        eEnd = eEnd.value,
+        eHost = eHost.value,
+        eLocal = eLocal.value,
+        eGuest = eGuest.value,
+        eType = eType.value;
+        thisdatetoday = document.querySelector('#eventstart').getAttribute("min");
     if(thisdatetoday >= eStart) {
           //console.log('Event must start in a future datetime greater than now');//error-message
           estartstatus.innerHTML = '<span class="error-small">Event must start in a future datetime greater than now.</span>';
@@ -211,7 +212,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
               eventend: eEnd.trim(),
               eventlocal: eLocal.trim(),
               eventguest: eGuest.trim(),
-              eventdescription: eDesc.trim().trim(),
+              eventdescription: eDesc.trim(),
               eventposter: fname.trim()
             }, function(error) {
             if (error) {
@@ -219,10 +220,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
               estatus.innerHTML ='<div class="error">Data could not be saved '+error+'</div>';
             } else {
               window.scrollTo(0,0);
-              eventsForm.innerHTML = '<div class="success">Event created successfully. Go to <a href="/">Homepage</a> to view your event!</div>';
+              eventsForm.innerHTML = '<div class="success">Event created successfully. Go to <a href="event/'+eventChild+'" tabindex="-1">'+eName+'</a> to view your event!</div>';
               app.$.toast.text = 'Event Created Successfully!';
               app.$.toast.show();
-              window.location = "/event/"+eventChild+"";
       }
     });
          });
