@@ -28,20 +28,20 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     <form is="iron-form" id="eventsForm">
 
       <paper-card heading="Hosting An Event Is Fast And Easy!">
-        <paper-input name="eventname" id="eventname" label="Name of the event" autofocus required auto-validate error-message="Enter Event Title"></paper-input>
-        <paper-input name="event_type" id="event_type" is="iron-input" list="dlist" label="Type of the event e.g Birthday Party" required auto-validate error-message="What is this event type?"></paper-input>
+        <paper-input name="eventname" id="eventname" label="Name of the event" autofocus required auto-validate error-message="Enter Event Title. Min Length 5" minlength="5"></paper-input>
+        <paper-input name="event_type" id="event_type" is="iron-input" list="dlist" label="Type of the event e.g Birthday Party" required auto-validate error-message="What is this event type? Min Length 3" minlength="3"></paper-input>
         <datalist id="dlist">
             <option>Birthday Party</option>
             <option>Conference Talk</option>
             <option>Wedding</option>
             <option>Debate</option>
         </datalist>
-        <paper-input name="eventhost" id="eventhost" label="Event host e.g name or organization" required auto-validate error-message="Enter event host"></paper-input>
+        <paper-input name="eventhost" id="eventhost" label="Event host e.g name or organization" minlength="5" required auto-validate error-message="Enter event host. Min Length 5"></paper-input>
         <paper-input name="eventstart" id="eventstart" label="Start Date" type="datetime-local" required auto-validate error-message="When is this event?" value="" on-mouseout="datetimeCheck"></paper-input><div id="estartstatus"></div>
         <paper-input name="eventend" id="eventend" label="End Date" type="datetime-local" required auto-validate error-message="When does it end?" value="2020-04-16T8:45" on-mouseout="datetimeCheck2"></paper-input><div id="eendstatus"></div>
-        <paper-input name="eventguest" id="eventguest" label="Guest List seperated by commas" required auto-validate error-message="Who is the special guest of honor?"></paper-input>
-        <paper-input name="eventlocal" id="eventlocal" id="eventlocal" autocomplete="on" label="Event Location" value="{{value}}" required auto-validate error-message="Place of event"></paper-input>
-        <paper-textarea name="eventdescription" id="eventdescription" label="Event Description" required auto-validate error-message="More about this event"></paper-textarea>
+        <paper-input name="eventguest" id="eventguest" label="Guest List seperated by commas" required auto-validate error-message="Who is the special guest of honor? Min Length 5" minlength="5"></paper-input>
+        <paper-input name="eventlocal" id="eventlocal" id="eventlocal" autocomplete label="Event Location" value="{{value}}" required auto-validate error-message="Place of event" minlength="3"></paper-input>
+        <paper-textarea name="eventdescription" id="eventdescription" label="Event Description (Optional)" auto-validate error-message="More about this event. Optional"></paper-textarea>
         <div id="estatus"></div>
         <div class="margin30"></div>
       <paper-button toggles raised class="submit custom green"  onclick="_eventSubmit(event)" disabled id="eventsSubmit">
@@ -105,8 +105,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         var estartVal = eStart.value;
         eStart.setAttribute("value", datetime);
         eStart.setAttribute("min", datetime);
-        console.log(datetime);
-
+        
         },
         datetimeCheck: function(event, detail, sender){
           var eStart = this.$.eventstart;
@@ -205,15 +204,15 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         var fname = snap.val().full_name;
       var fireBaseRefInfo = new Firebase("https://boiling-torch-4136.firebaseio.com/events");
         fireBaseRefInfo.child(eventChild).set({
-              eventname: eName,
-              eventhost: eHost,
-              event_type: eType,
-              eventstart: eStart,
-              eventend: eEnd,
-              eventlocal: eLocal,
-              eventguest: eGuest,
-              eventdescription: eDesc,
-              eventposter: fname
+              eventname: eName.trim(),
+              eventhost: eHost.trim(),
+              event_type: eType.trim(),
+              eventstart: eStart.trim(),
+              eventend: eEnd.trim(),
+              eventlocal: eLocal.trim(),
+              eventguest: eGuest.trim(),
+              eventdescription: eDesc.trim().trim(),
+              eventposter: fname.trim()
             }, function(error) {
             if (error) {
               //alert("Data could not be saved." + error);
