@@ -37,8 +37,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             <option>Debate</option>
         </datalist>
         <paper-input name="eventhost"  id="eventhost" label="Event host e.g name or organization" minlength="5" required auto-validate error-message="Enter event host. Min Length 5"></paper-input >
-        <paper-input name="eventstart" id="eventstart" label="Start Date" type="datetime-local" required auto-validate error-message="When is this event?" value="" on-mouseout="datetimeCheck"></paper-input><div id="estartstatus"></div>
-        <paper-input name="eventend" id="eventend" label="End Date" type="datetime-local" required auto-validate error-message="When does it end?" value="2020-04-16T8:45" on-mouseout="datetimeCheck2"></paper-input><div id="eendstatus"></div>
+        <paper-input name="eventstart" id="eventstart" label="Start Date" type="datetime-local" required auto-validate error-message="When is this event?" value="" on-change="datetimeCheck"></paper-input><div id="estartstatus"></div>
+        <paper-input name="eventend" id="eventend" label="End Date" type="datetime-local" required auto-validate error-message="When does it end?" value="2020-04-16T8:45" on-change="datetimeCheck2"></paper-input><div id="eendstatus"></div>
         <paper-input name="eventguest" id="eventguest" label="Guest List seperated by commas" required auto-validate error-message="Who is the special guest of honor? Min Length 5" minlength="5"></paper-input>
         <paper-input name="eventlocal" id="eventlocal" id="eventlocal" autocomplete label="Event Location" value="{{value}}" required auto-validate error-message="Place of event" minlength="3"></paper-input>
         <paper-textarea name="eventdescription" id="eventdescription" label="Event Description (Optional)" auto-validate error-message="More about this event. Optional" value=""></paper-textarea>
