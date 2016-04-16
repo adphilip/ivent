@@ -1,4 +1,3 @@
-![](https://cloud.githubusercontent.com/assets/110953/7877439/6a69d03e-0590-11e5-9fac-c614246606de.png)
 ## IVENT Meet-Up Event App
 
 > Event App for locals
@@ -11,7 +10,7 @@
 * Unit testing with [Web Component Tester](https://github.com/Polymer/web-component-tester)
 * Optional offline setup through [Platinum](https://elements.polymer-project.org/browse?package=platinum-elements) Service Worker elements
 * End-to-end Build Tooling (including [Vulcanize](https://github.com/Polymer/vulcanize))
-* [Recipes](/docs/README.md/) for ES2015 support, Polymer performance, using Chrome Dev Editor, Deploying to GitHub Pages, Deploying to Firebase, Mobile Chrome Apps and lint tools.
+
 
 ### Demo
 See latest Ivent Demo (from master) at https://boiling-torch-4136.firebaseapp.com/
@@ -45,7 +44,7 @@ The IVENT requires the following major dependencies:
 - npm, the node package manager, installed with Node.js and used to install Node.js packages.
 - gulp, a Node.js-based build tool.
 - bower, a Node.js-based package manager used to install front-end packages (like Polymer).
-- The starter kit gulp build process uses platform specific tools which is handled by node-gyp which is included in node.js. See https://github.com/nodejs/node-gyp/blob/master/README.md for additional platform specific dependencies.
+- The starter kit gulp build process uses platform specific tools which is handled by node-gyp which is included in node.js. 
 
 **To install dependencies:**
 

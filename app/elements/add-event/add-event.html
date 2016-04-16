@@ -37,8 +37,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             <option>Debate</option>
         </datalist>
         <paper-input name="eventhost" id="eventhost" label="Event host e.g name or organization" required auto-validate error-message="Enter event host"></paper-input>
-        <paper-input name="eventstart" id="eventstart" label="Start Date" type="datetime-local" required auto-validate error-message="When is this event?"></paper-input>
-        <paper-input name="eventend" id="eventend" label="End Date" type="datetime-local" required auto-validate error-message="When does it end?"></paper-input>
+        <paper-input name="eventstart" id="eventstart" label="Start Date" type="datetime-local" required auto-validate error-message="When is this event?" value="" on-mouseout="datetimeCheck"></paper-input><div id="estartstatus"></div>
+        <paper-input name="eventend" id="eventend" label="End Date" type="datetime-local" required auto-validate error-message="When does it end?" value="2020-04-16T8:45" on-mouseout="datetimeCheck2"></paper-input><div id="eendstatus"></div>
         <paper-input name="eventguest" id="eventguest" label="Guest List seperated by commas" required auto-validate error-message="Who is the special guest of honor?"></paper-input>
         <paper-input name="eventlocal" id="eventlocal" id="eventlocal" autocomplete="on" label="Event Location" value="{{value}}" required auto-validate error-message="Place of event"></paper-input>
         <paper-textarea name="eventdescription" id="eventdescription" label="Event Description" required auto-validate error-message="More about this event"></paper-textarea>
@@ -79,6 +79,60 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         eventsForm.addEventListener('mouseout', function(event) {
           eventsSubmit.disabled = !eventsForm.validate();
         });
+           //set date start to datetime_local now
+        function addZero(i) {
+            if (i < 10) {
+                i = "0" + i;
+            }
+            return i;
+        }
+        function dateToString(date) {
+            var month = date.getMonth() + 1;
+            var day = date.getDate();
+            var dateOfString = date.getFullYear() + "-";
+            dateOfString += (("" + month).length < 2 ? "0" : "") + month + "-";
+            dateOfString += (("" + day).length < 2 ? "0" : "") + day + "T";
+            
+            return dateOfString;
+        }
+
+        var currentdate = new Date();
+        var datetime = "";
+        datetime += dateToString(currentdate );
+        datetime += + addZero(currentdate.getHours()) + ":"
+                    + addZero(currentdate.getMinutes());
+        var eStart = this.$.eventstart;
+        var estartVal = eStart.value;
+        eStart.setAttribute("value", datetime);
+        eStart.setAttribute("min", datetime);
+        console.log(datetime);
+
+        },
+        datetimeCheck: function(event, detail, sender){
+          var eStart = this.$.eventstart;
+          var estartVal = eStart.value;
+          var thisdatetoday = eStart.min;
+          var estartstatus = this.$.estartstatus;
+        if(thisdatetoday >= estartVal) {
+          //console.log('Event must start in a future datetime greater than now');//error-message
+          estartstatus.innerHTML = '<span class="error-small">Event must start in a future datetime greater than now.</span>';
+          } else {
+            estartstatus.innerHTML = '';
+          }
+        },
+        datetimeCheck2: function(event, detail, sender){
+          var eStart = this.$.eventstart;
+          var estartVal = eStart.value;
+          var eEnd = this.$.eventend;
+          var eendVal = eEnd.value;
+          var thisdatetoday = eStart.min;
+          var eendstatus = this.$.eendstatus;
+        if(eendVal <= estartVal) {
+          //console.log('Event must start in a future datetime greater than now');//error-message
+          eendstatus.innerHTML = '<span class="error-small">Event must end sometime in the future.</span>';
+          } else {
+            eendstatus.innerHTML ='';
+          }
         },
     on_api_load: function () {
       this.autocomplete = new google.maps.places.Autocomplete(this.$.eventlocal, this.options);
@@ -95,8 +149,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     })();
     function _eventSubmit(event) {
     event.preventDefault();
+    var spinnerevent = document.querySelector('#spinnerevent');
     spinnerevent.active = true;
     spinnerevent.hidden = false;
+    var eventsSubmit = document.querySelector('#eventsSubmit');
     eventsSubmit.disabled = true;
     var eName = document.querySelector('#eventname');
     var eDesc = document.querySelector('#eventdescription');
@@ -114,6 +170,21 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     var eLocal = eLocal.value;
     var eGuest = eGuest.value;
     var eType = eType.value;
+    var thisdatetoday = document.querySelector('#eventstart').getAttribute("min");
+    if(thisdatetoday >= eStart) {
+          //console.log('Event must start in a future datetime greater than now');//error-message
+          estartstatus.innerHTML = '<span class="error-small">Event must start in a future datetime greater than now.</span>';
+           spinnerevent.hidden = true;
+          eventsSubmit.disabled = true;
+    }
+   else if(eEnd <= eStart) {
+          //console.log('Event must start in a future datetime greater than now');//error-message
+          eendstatus.innerHTML = '<span class="error-small">Event must end sometime in the future.</span>';
+          spinnerevent.hidden = true;
+          eventsSubmit.disabled = true;
+    } 
+    else 
+    { 
     function randomString(len, charSet) {
             charSet = charSet || 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
             var randomString = '';
@@ -152,11 +223,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
               eventsForm.innerHTML = '<div class="success">Event created successfully. Go to <a href="/">Homepage</a> to view your event!</div>';
               app.$.toast.text = 'Event Created Successfully!';
               app.$.toast.show();
-              window.location = "/";
+              window.location = "/event/"+eventChild+"";
       }
     });
          });
        }
+     }// end else statement
     }
  
   </script>
