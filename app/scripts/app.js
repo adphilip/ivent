@@ -14,7 +14,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
   // and give it some initial binding values
   // Learn more about auto-binding templates at http://goo.gl/Dx1u2g
   var app = document.querySelector('#app');
-  
+
   // Sets app default base URL
   app.baseUrl = '/';
   if (window.location.port === '') {  // if production
@@ -68,6 +68,88 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     }
 
   var hashDetection = new hashHandler();
+
+ var progressBar = document.querySelector('paper-progress');
+          function ProgressTracker (inputs, progressBar) {
+            var self = this;
+            this.progressBar = progressBar;
+            this.inputs = inputs;
+
+            this.inputs.forEach(function (input) {
+              input.element = document.querySelector(input.selector);
+              input.added = false;
+              input.isValid = null;
+
+              input.element.oninput = function () {
+                input.isValid = self.determineStatus(input);
+                self.adjustProgressIfNecessary(input);
+              };
+            });
+          };
+
+  ProgressTracker.prototype = {
+  determineStatus: function (input) {
+    var isValid = false;
+    
+    if (input.element.value.length > 0) {
+      isValid = true;
+    } else {
+      isValid = false;
+    }
+
+    try {
+      isValid = isValid && input.element.validate();
+    } catch (e) {
+      console.log(e);
+    }
+    return isValid;
+  },
+  adjustProgressIfNecessary: function (input) {
+    var newAmount = this.progressBar.value;
+
+    if (input.added && !input.isValid) {
+      newAmount = newAmount - input.amount;
+      input.added = false;
+    } else if (!input.added && input.isValid) {
+      newAmount = newAmount + input.amount;
+      input.added = true;
+    }
+
+    this.progressBar.value = newAmount;
+  }
+};
+
+// If you're feeling ambitious, you could add the logic to handle changed billing addresses here!
+var inputs = [
+  {
+    selector: '#eventname',
+    amount: 14
+  }, {
+    selector: '#event_type',
+    amount: 14
+  }, {
+    selector: '#eventhost',
+    amount: 14
+  }, {
+    selector: '#eventguest',
+    amount: 14
+  }, {
+    selector: '#eventstart',
+    amount: 14
+  }, {
+    selector: '#eventend',
+    amount: 14
+  }, {
+    selector: '#eventlocal',
+    amount: 14
+  }, {
+    selector: '#eventdescription',
+    amount: 2
+  }
+];
+
+var progressTracker = new ProgressTracker(inputs, progressBar);
+
   });
  
     
