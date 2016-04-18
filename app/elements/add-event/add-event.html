@@ -20,11 +20,20 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     paper-button[disabled], paper-icon-button[disabled] {
       pointer-events: none;
     }
-    
+     paper-progress {
+      width: 90%;
+      position: fixed;
+      z-index: 999;
+      --paper-progress-transition-duration: 0.08s;
+      --paper-progress-transition-timing-function: ease;
+      --paper-progress-transition-transition-delay: 0s;
+    }
     </style>
-  <google-maps-api id="maps" libraries="places" on-api-load="on_api_load"></google-maps-api>
-  <div class="layout vertical main">
 
+  <google-maps-api id="maps" libraries="places" on-api-load="on_api_load"></google-maps-api>
+     <paper-progress class="transiting" value="0"></paper-progress>  
+  <div class="layout vertical main">
+  
     <form is="iron-form" id="eventsForm">
 
       <paper-card heading="Hosting An Event Is Fast And Easy!">
@@ -77,10 +86,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
      ready: function () {
         var eventsForm = this.$.eventsForm;
         var estatus = this.$.estatus;
-        eventsForm.addEventListener('mouseout', function(event) {
+          eventsForm.addEventListener('mouseout', function(event) {
           eventsSubmit.disabled = !eventsForm.validate();
         });
-           //set date start to datetime_local now
+       
+          
+        //set date start to datetime_local now
         function addZero(i) {
             if (i < 10) {
                 i = "0" + i;
@@ -106,6 +117,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         var estartVal = eStart.value;
         eStart.setAttribute("value", datetime);
         eStart.setAttribute("min", datetime);
+
+
         },
         datetimeCheck: function(event, detail, sender){
           var eStart = this.$.eventstart;
@@ -132,7 +145,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           } else {
             eendstatus.innerHTML ='';
           }
-        },
+    },
     on_api_load: function () {
       this.autocomplete = new google.maps.places.Autocomplete(this.$.eventlocal, this.options);
       google.maps.event.addListener(this.autocomplete, 'place_changed', this.on_change_place.bind(this));
@@ -147,6 +160,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     }
       });
     })();
+
+
     function _eventSubmit(event) {
     event.preventDefault();
     var spinnerevent = document.querySelector('#spinnerevent');
@@ -230,5 +245,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
      }// end else statement
     }
  
+
   </script>
 </dom-module>
